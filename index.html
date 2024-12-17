@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Новости в реальном времени</title>
+    <script>
+        let ws;
+
+        function startWebSocket() {
+            ws = new WebSocket('ws://localhost:8080/ws');
+            ws.onmessage = function(event) {
+                const news = document.getElementById('news');
+                const newsItem = document.createElement('div');
+                newsItem.textContent = event.data;
+                news.appendChild(newsItem);
+            };
+
+            ws.onclose = function() {
+                console.log('Соединение закрыто, пытаюсь переподключиться');
+                setTimeout(startWebSocket, 1000);
+            };
+        }
+
+        window.onload = function() {
+            startWebSocket();
+        };
+    </script>
+</head>
+<body>
+    <h1>Новости в реальном времени</h1>
+    <div id="news"></div>
+</body>
+</html>
